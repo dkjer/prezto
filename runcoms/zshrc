@@ -4,10 +4,42 @@
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
+source ~/.power9k.theme
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+# Initialize power9k plugin to set 'OS_ICON'.
+# We want to export this for use in tmux.
+_p9k_init
+export OS_ICON
+
+expand-or-complete-with-dots() {      # This bunch of code displays red dots when autocompleting
+  echo -n "\e[31m......\e[0m"         # a command with the tab key, "Oh-my-zsh"-style.
+  zle expand-or-complete
+  zle redisplay
+}
+zle -N expand-or-complete-with-dots
+bindkey "^I" expand-or-complete-with-dots
+
+#disable auto correct
+unsetopt correct
+#disable verify
+setopt rm_star_silent clobber
+unalias rm &>/dev/null
+unalias cp &>/dev/null
+unalias mv &>/dev/null
+
 # Customize to your needs...
+if type brew &>/dev/null; then
+    if [ -r "$(brew --prefix)/share/zsh-completions" ]; then
+        fpath=("$(brew --prefix)/share/zsh-completions" $fpath)
+    fi
+fi
+
+if [ -f ~/.sharedrc ]; then
+    source ~/.sharedrc
+fi
+
