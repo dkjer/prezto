@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 #
 # Executes commands at the start of an interactive session.
 #
@@ -10,4 +17,30 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+# Initialize power10k plugin to set 'OS_ICON'.
+# We want to export this for use in tmux.
+#_p9k_init
+#export OS_ICON
+
+expand-or-complete-with-dots() {      # This bunch of code displays red dots when autocompleting
+  echo -n "\e[31m......\e[0m"         # a command with the tab key, "Oh-my-zsh"-style.
+  zle expand-or-complete
+  zle redisplay
+}
+zle -N expand-or-complete-with-dots
+bindkey "^I" expand-or-complete-with-dots
+
+#disable auto correct
+unsetopt correct
+#disable verify
+setopt rm_star_silent clobber
+unalias rm &>/dev/null
+unalias cp &>/dev/null
+unalias mv &>/dev/null
+
+if [ -f ~/.sharedrc ]; then
+    source ~/.sharedrc
+fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
