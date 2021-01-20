@@ -60,7 +60,7 @@
     nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
     nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
     # node_version          # node.js version
-    go_version              # go version (https://golang.org)
+    # go_version            # go version (https://golang.org)
     # rust_version          # rustc version (https://www.rust-lang.org)
     # dotnet_version        # .NET version (https://dotnet.microsoft.com)
     # php_version           # php version (https://www.php.net/)
@@ -367,12 +367,12 @@
   typeset -g VCS_PADDING=" "
   typeset -g POWERLEVEL9K_VCS_BOOKMARK_ICON=""
   typeset -g POWERLEVEL9K_VCS_GIT_BITBUCKET_ICON=""
-  typeset -g POWERLEVEL9K_VCS_GIT_GITHUB_ICON=""
-  typeset -g POWERLEVEL9K_VCS_GIT_GITLAB_ICON=""
-  typeset -g POWERLEVEL9K_VCS_GIT_ICON=""
+  typeset -g POWERLEVEL9K_VCS_GIT_GITHUB_ICON="$VCS_PADDING"
+  typeset -g POWERLEVEL9K_VCS_GIT_GITLAB_ICON="$VCS_PADDING"
+  typeset -g POWERLEVEL9K_VCS_GIT_ICON="$VCS_PADDING"
   typeset -g POWERLEVEL9K_VCS_HG_ICON=""
   typeset -g POWERLEVEL9K_VCS_SVN_ICON=""
-  typeset -g POWERLEVEL9K_VCS_BRANCH_ICON="$VCS_PADDING"
+  typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=""
   typeset -g POWERLEVEL9K_VCS_COMMIT_ICON="$VCS_PADDING"
   typeset -g POWERLEVEL9K_VCS_INCOMING_CHANGES_ICON="$VCS_PADDING"
   typeset -g POWERLEVEL9K_VCS_OUTGOING_CHANGES_ICON="$VCS_PADDING"
@@ -382,7 +382,7 @@
   typeset -g POWERLEVEL9K_VCS_TAG_ICON="$VCS_PADDING"
   typeset -g POWERLEVEL9K_VCS_UNSTAGED_ICON="$VCS_PADDING"
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON="$VCS_PADDING"
-  #typeset -g POWERLEVEL9K_VCS_LOADING_ICON:" "
+  typeset -g POWERLEVEL9K_VCS_LOADING_ICON="$VCS_PADDING"
 
 
   # Don't count the number of unstaged, untracked and conflicted files in Git repositories with
@@ -1285,7 +1285,7 @@
   #[ aws: aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) ]#
   # Show aws only when the the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show aws.
-  typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|terraform|pulumi|terragrunt'
+  #typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|deploy*|ecs.sh|*-aws-*|awless|cfn.sh|ecr|terraform|pulumi|terragrunt'
 
   # POWERLEVEL9K_AWS_CLASSES is an array with even number of elements. The first element
   # in each pair defines a pattern against which the current AWS profile gets matched.
@@ -1307,16 +1307,48 @@
   #
   # You can define different colors, icons and content expansions for different classes:
   #
-  #   typeset -g POWERLEVEL9K_AWS_TEST_FOREGROUND=28
-  #   typeset -g POWERLEVEL9K_AWS_TEST_VISUAL_IDENTIFIER_EXPANSION='⭐'
-  #   typeset -g POWERLEVEL9K_AWS_TEST_CONTENT_EXPANSION='> ${P9K_CONTENT} <'
+  #typeset -g POWERLEVEL9K_AWS_TEST_FOREGROUND=28
+  #typeset -g POWERLEVEL9K_AWS_TEST_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  #typeset -g POWERLEVEL9K_AWS_TEST_CONTENT_EXPANSION='> ${P9K_CONTENT} <'
+
+  #typeset -g POWERLEVEL9K_AWS_PROD_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_AWS_PROD_FOREGROUND=255
+  #typeset -g POWERLEVEL9K_AWS_PROD_BACKGROUND=160
+  typeset -g POWERLEVEL9K_AWS_PROD_BACKGROUND=red
+  typeset -g POWERLEVEL9K_AWS_PROD_CONTENT_EXPANSION='⭐${P9K_CONTENT}⭐'
+
+  #typeset -g POWERLEVEL9K_AWS_MASTER_FOREGROUND=235
+  #typeset -g POWERLEVEL9K_AWS_MASTER_BACKGROUND=41
+  typeset -g POWERLEVEL9K_AWS_MASTER_FOREGROUND=0
+  typeset -g POWERLEVEL9K_AWS_MASTER_BACKGROUND=green
+  typeset -g POWERLEVEL9K_AWS_MASTER_CONTENT_EXPANSION='⭐${P9K_CONTENT}⭐'
+
+  typeset -g POWERLEVEL9K_AWS_STAGING_FOREGROUND=255
+  typeset -g POWERLEVEL9K_AWS_STAGING_BACKGROUND=33
+
+  typeset -g POWERLEVEL9K_AWS_DEV_FOREGROUND=0
+  typeset -g POWERLEVEL9K_AWS_DEV_BACKGROUND=yellow
+
+  typeset -g POWERLEVEL9K_AWS_INFRA_FOREGROUND=254
+  typeset -g POWERLEVEL9K_AWS_INFRA_BACKGROUND=128
+
+  typeset -g POWERLEVEL9K_AWS_STREAMING_FOREGROUND=253
+  typeset -g POWERLEVEL9K_AWS_STREAMING_BACKGROUND=200
+
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_FOREGROUND=235
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_BACKGROUND=249
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_CONTENT_EXPANSION=' ${P9K_CONTENT} '
+  #typeset -g POWERLEVEL9K_AWS_DEFAULT_VISUAL_IDENTIFIER_EXPANSION=''
+
+
   typeset -g POWERLEVEL9K_AWS_CLASSES=(
-      # '*prod*'  PROD    # These values are examples that are unlikely
-      # '*test*'  TEST    # to match your needs. Customize them as needed.
-      '*'       DEFAULT)
-  # typeset -g POWERLEVEL9K_AWS_DEFAULT_FOREGROUND=7
-  # typeset -g POWERLEVEL9K_AWS_DEFAULT_BACKGROUND=1
-  # typeset -g POWERLEVEL9K_AWS_DEFAULT_VISUAL_IDENTIFIER_EXPANSION='⭐'
+      '*prod*'   PROD    # These values are examples that are unlikely
+      '*stag*'   STAGING
+      '*dev*'    DEV
+      '*infra*'  INFRA
+      '*stream*' STREAMING
+      '*master*' MASTER
+      '*'        DEFAULT)
 
   #[ aws_eb_env: aws elastic beanstalk environment (https://aws.amazon.com/elasticbeanstalk/) ]#
   # AWS Elastic Beanstalk environment color.
