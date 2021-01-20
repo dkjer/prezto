@@ -34,13 +34,8 @@ unalias cp &>/dev/null
 unalias mv &>/dev/null
 
 if [ -f ~/.sharedrc ]; then
-    source ~/.sharedrc
+  source ~/.sharedrc
 fi
-
-get_os_icon() {
-  _p9k_init >/dev/null 2>&1
-  echo $_p9k_os_icon
-}
 
 # To customize prompt, run `p10k configure` to override internal config.
 if [[ -f "$HOME/.p10k.zsh" ]]; then
@@ -49,7 +44,4 @@ elif [[ -s "${ZDOTDIR:-$HOME}/.zprezto/p10k.zsh" ]]; then
   # Fall back to internal p10k configuration.
   source "${ZDOTDIR:-$HOME}/.zprezto/p10k.zsh"
 fi
-
-# We want to export this for use in tmux.
-export OS_ICON="${OS_ICON:-${P9K_OS_ICON:-$(get_os_icon)}}"
 

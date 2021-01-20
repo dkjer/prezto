@@ -184,10 +184,64 @@
   typeset -g POWERLEVEL9K_EMPTY_LINE_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
 
   #################################[ os_icon: os identifier ]##################################
+  function get_os_icon() {
+    _p9k_init_icons
+    local uname="$(uname)"
+    local uname_o
+    [[ $uname == Linux ]] && uname_o="$(uname -o 2>/dev/null)"
+    local uname_m="$(uname -m)"
+
+    if [[ $uname == Linux && $uname_o == Android ]]; then
+      echo $icons[ANDROID_ICON]
+    else
+      case $uname in
+        SunOS)                     echo $icons[SUNOS_ICON];;
+        Darwin)                    echo $icons[APPLE_ICON];;
+        CYGWIN_NT-* | MSYS_NT-*)   echo $icons[WINDOWS_ICON];;
+        FreeBSD|OpenBSD|DragonFly) echo $icons[FREEBSD_ICON];;
+        Linux)
+          local os_release_id
+          if [[ -r /etc/os-release ]]; then
+            local lines=(${(f)"$(</etc/os-release)"})
+            lines=(${(@M)lines:#ID=*})
+            (( $#lines == 1 )) && os_release_id=${lines[1]#ID=}
+          elif [[ -e /etc/artix-release ]]; then
+            os_release_id=artix
+          fi
+          case $os_release_id in
+            *arch*)                  echo $icons[LINUX_ARCH_ICON];;
+            *debian*)                echo $icons[LINUX_DEBIAN_ICON];;
+            *raspbian*)              echo $icons[LINUX_RASPBIAN_ICON];;
+            *ubuntu*)                echo $icons[LINUX_UBUNTU_ICON];;
+            *elementary*)            echo $icons[LINUX_ELEMENTARY_ICON];;
+            *fedora*)                echo $icons[LINUX_FEDORA_ICON];;
+            *coreos*)                echo $icons[LINUX_COREOS_ICON];;
+            *gentoo*)                echo $icons[LINUX_GENTOO_ICON];;
+            *mageia*)                echo $icons[LINUX_MAGEIA_ICON];;
+            *centos*)                echo $icons[LINUX_CENTOS_ICON];;
+            *opensuse*|*tumbleweed*) echo $icons[LINUX_OPENSUSE_ICON];;
+            *sabayon*)               echo $icons[LINUX_SABAYON_ICON];;
+            *slackware*)             echo $icons[LINUX_SLACKWARE_ICON];;
+            *linuxmint*)             echo $icons[LINUX_MINT_ICON];;
+            *alpine*)                echo $icons[LINUX_ALPINE_ICON];;
+            *aosc*)                  echo $icons[LINUX_AOSC_ICON];;
+            *nixos*)                 echo $icons[LINUX_NIXOS_ICON];;
+            *devuan*)                echo $icons[LINUX_DEVUAN_ICON];;
+            *manjaro*)               echo $icons[LINUX_MANJARO_ICON];;
+            *void*)                  echo $icons[LINUX_VOID_ICON];;
+            *artix*)                 echo $icons[LINUX_ARTIX_ICON];;
+            *)                       echo $icons[LINUX_ICON];;
+          esac
+          ;;
+      esac
+    fi
+  }
+
   # OS identifier color.
   #typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
   #typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=7
   # Custom icon.
+  typeset -g OS_ICON="${OS_ICON:-$(get_os_icon)}"
   typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION="$OS_ICON"
 
   ################################[ prompt_char: prompt symbol ]################################
@@ -1642,3 +1696,5 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
+
+echo $icons > /tmp/icons
