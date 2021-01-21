@@ -243,6 +243,7 @@
   # Custom icon.
   typeset -g OS_ICON="${OS_ICON:-$(get_os_icon)}"
   typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION="$OS_ICON"
+  export OS_ICON
 
   ################################[ prompt_char: prompt symbol ]################################
   # Transparent background.
